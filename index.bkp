@@ -1,0 +1,252 @@
+<html>
+<html lang="en">
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style type="text/css">
+      
+    body { 
+        /*background-image: url('https://source.unsplash.com/random/800x600'); */
+        background-image: url('https://farm9.staticflickr.com/8740/16695514860_86b1a11cfe_h.jpg');
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-position: center;
+        background-size: cover;
+    }
+
+    h1 {
+        color: green;
+        
+    }
+    p.capitalize {
+        text-transform: capitalize;
+    }
+
+    #getRandomQuote,
+    #getTwitter {
+        display: inline-block;
+        /* vertical-align: middle; */
+        vertical-align: bottom;
+        text-align:center;
+    }
+      
+    div.transbox {
+        margin: 30px;
+        background-color: #ffffff;
+        border: 1px solid black;
+        opacity: 0.7;
+        filter: alpha(opacity=60); /* For IE8 and earlier */
+    }
+
+    div.transbox p {
+        margin: 5%;
+        font-weight: bold;
+        color: #000000;
+    }      
+      
+    .content {
+        width: 500px;
+        height: 400px;
+        position:absolute; /*it can be fixed too*/
+        left:0; right:0;
+        top:0; bottom:0;
+        margin:auto;
+
+        /*this to solve "the content will not be cut when the window is smaller than the content": */
+        max-width:100%;
+        max-height:100%;
+        overflow:auto; 
+        /* opacity: 0.6; */ /* set the opacity level of the div element.*/
+        /* background: rgba(76, 175, 80, 0.3) */
+        background: rgba(0, 0, 0, 0.8)
+    }      
+      
+      
+    .card-content {
+        width: 500px;
+        height: 350px; 
+        position:absolute; /*it can be fixed too*/
+        left:0; right:0;
+        top:0; bottom:0;
+        margin:auto;
+        background: rgba(0, 0, 0, 0.8);
+        color: whitesmoke;
+    }      
+    
+    .center{
+        position:absolute;
+        height: X px;
+        width: Y px;
+        left:50%;
+        top:50%;
+        margin-top:- X/2 px;
+        margin-left:- Y/2 px;
+    }     
+    
+    html, body, .container
+    {
+        height: 100%; 
+        min-height: 100%;
+    }
+
+    .first {
+        float: left;
+        width: 20%;
+        height: 30%;
+        background-color: red;
+    }
+
+    .second{
+        float: left;
+        width: 20%;
+        height: 70%;
+        background-color: green;
+    }
+
+    .third{
+        float: right;
+        width: 80%;
+        height: 80%;
+        background-color: blue;
+    }
+
+    .fourth {
+        float: right;
+        width: 40%;
+        height: 20%;
+        background-color: #DDDDDD;
+    }
+
+    .last{
+        float: right;
+        width: 40%;
+        height: 20%;
+        background-color: yellow;
+    }      
+      
+  </style>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.1">
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>Random Quote Generator</title>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+
+  <!-- Font Awesome icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>    
+    
+    
+  <script>
+    $(document).ready(function() {
+      $("#getRandomQuote").on("click", function() {
+          getRandomQuote();
+      });
+
+      window.onload = function() {
+          getRandomQuote();
+          console.log("Inside onload function...")
+      }    
+        
+      function getRandomQuote() {
+        $.ajax({
+               url: "https://andruxnet-random-famous-quotes.p.mashape.com/?cat=famous&count=03",
+               dataType: "json",
+               crossDomain: true,
+               success: function displayResponse(response) {
+                   console.log("Retrieving API data...");
+                   var html = "";
+                   var authhtml = "";
+                   var quotesArray = [];
+                     response.splice(1,2);
+                     response.forEach(function(val) {
+                         html += "<div class = 'quote'>";
+                         html += "<strong>" + val.quote + "</strong>";
+                         html += "</div>";
+                         authhtml += "<div class = 'quote_author'>";
+                         authhtml += "<strong>" + val.author + "</strong>";
+                         authhtml += "</div>";                         
+                     });
+                    console.log(quotesArray);                   
+                   $("#message").html(html);
+                   $("#author").html(authhtml);
+               },
+               beforeSend: setHeader
+           });
+            function setHeader(xhr) {
+                xhr.setRequestHeader("X-Mashape-Key", "AVZTmj00cPmshzYahYLvKSzo9Xqpp1p5Gxmjsn7mnY3DDl0IST")
+                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                xhr.setRequestHeader("Accept", "application/json");
+            }          
+      }
+        
+      $("#getTwitter").on("click", function() {
+          tweetQuote();
+      });        
+        
+     function tweetQuote() {
+         var twitterURL = "http://twitter.com/intent/tweet?text=";
+         var twitterRelated = "";
+         var tweetText = document.getElementById('message');
+         var tweetedLink = tweetText.textContent || tweetText.innerText;
+         tweetedLink.replace(/; */g," ");
+         
+         var tweetAuth = document.getElementById('author');
+         var tweetedAuth = tweetAuth.textContent || tweetAuth.innerText;         
+         
+         var getPostTitle = "Random Quote";
+         console.log(tweetedLink);
+         console.log(tweetedAuth);
+         window.open(twitterURL + tweetedLink + " ~ " + tweetedAuth + "&hashtags=quotes,freeCodeCamp&via=yattishr&", "twitterwindow", "height=450, width=550, toolbar=0, location=0, menubar=0, directories=0, scrollbars=0");         
+     }
+    });  
+        
+  </script>
+
+</head>
+<body>
+</body>
+    
+<div class="card card-content">
+    <div class="card-header">
+        <h2 class="card-title text-center">Random Quote Generator</h4>
+        <p class="card-text text-center" id="message">Random Quote Content.</p>
+        <p class="card-text text-center" id="author">Random Quote Content Author.</p>
+
+        <div class="card-body text-center">
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>        
+            <div class="col-xs-6">
+                <button id="getRandomQuote" class="btn btn-block btn-primary btn-md center-block" style="width: 200px"><i class="fa fa-snowflake-o"></i>
+                Random Quote
+                </button>
+            </div>
+            <div class="col-xs-6">
+                <button id="getTwitter" class="btn btn-block btn-primary btn-md center-block" style="width: 200px"><i class="fa fa-twitter"></i>
+                Tweet This
+            </button>
+            </div>                
+    </div>            
+    </div>    
+</div>        
+    
+<!-- experimental div tags below for tiles -->    
+<!-- 
+<div class="container">
+<div class="first">first</div><div class="third">third</div>
+<div class="second">second</div><div class="fourth">fourth</div><div class="last">last</div>
+</div>    
+<!-- experimental div tags end for tiles -->    
+    
+    
+</html>
